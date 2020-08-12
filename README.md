@@ -1,4 +1,4 @@
-# Movie Search
+# Gif Search
 
 ## Build Setup
 
