@@ -223,18 +223,16 @@ export default {
     } else {
       await vm.getGifData();
     }
-    await vm.getTags();
     if (vm.$route.query.item[0] !== "[") {
       vm.first = vm.$route.query.item;
     } else {
       vm.first = vm.queryData[0];
     }
-    setTimeout(() => {
-      vm.loading = false;
-    }, 500);
-    /* 動畫 */
-    document.querySelector("#avatar").classList.add("active");
-    document.querySelector("#main-area").classList.add("active");
+    vm.withPromise()
+      .then(() => vm.getTags())
+      .then(() => (vm.loading = false))
+      .then(() => document.querySelector("#avatar").classList.add("active"))
+      .then(() => document.querySelector("#main-area").classList.add("active"));
   },
   methods: {
     /* 拿 gif api */
@@ -261,6 +259,12 @@ export default {
         vm.pagination.count = 500;
       }
     },
+    /* Promise call */
+    withPromise() {
+      return new Promise(resolve => {
+        resolve();
+      });
+    },
     /* 點圖片 */
     clickImg(item) {
       const vm = this;
@@ -268,10 +272,9 @@ export default {
       window.scrollTo({
         top: 0
       });
-      vm.first = item;
-      setTimeout(() => {
-        vm.loading = false;
-      }, 200);
+      vm.withPromise()
+        .then(() => (vm.first = item))
+        .then(() => (vm.loading = false));
     },
     /* 點熱門Tag */
     async searchTags(item) {
@@ -288,13 +291,12 @@ export default {
           vm.$route.query.keyword
         }&offset=${(vm.current - 1) * 25}`
       );
-      vm.queryData = result.data.data;
       window.scrollTo({
         top: top
       });
-      setTimeout(() => {
-        vm.pass = false;
-      }, 500);
+      vm.withPromise()
+        .then(() => (vm.queryData = result.data.data))
+        .then(() => (vm.pass = false));
     },
     /* 翻轉圖片 */
     openLink() {
