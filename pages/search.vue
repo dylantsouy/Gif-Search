@@ -233,14 +233,12 @@ export default {
       top: 0
     });
     /* call api */
-    await vm.queryHandler();
-    await vm.getTags();
-    setTimeout(() => {
-      vm.loading = false;
-    }, 500);
-    /* 動畫 */
-    document.querySelector("#avatar").classList.add("active");
-    document.querySelector("#main-area").classList.add("active");
+    vm.withPromise()
+      .then(() => vm.queryHandler())
+      .then(() => vm.getTags())
+      .then(() => (vm.loading = false))
+      .then(() => document.querySelector("#avatar").classList.add("active"))
+      .then(() => document.querySelector("#main-area").classList.add("active"));
   },
   methods: {
     /* 控制call api type */
@@ -282,6 +280,12 @@ export default {
         vm.pagination.total_count = 500;
       }
     },
+    /* Promise call */
+    withPromise() {
+      return new Promise(resolve => {
+        resolve();
+      });
+    },
     /* 拿熱門標籤api */
     async getTags() {
       const vm = this;
@@ -301,11 +305,10 @@ export default {
         top: 0
       });
       vm.showLink = false;
-      await vm.getStickerData();
       vm.type = 2;
-      setTimeout(() => {
-        vm.loading = false;
-      }, 500);
+      vm.withPromise()
+        .then(() => vm.getStickerData())
+        .then(() => (vm.loading = false));
     },
     /* 點更換type 1*/
     async changeGif() {
@@ -318,11 +321,10 @@ export default {
         top: 0
       });
       vm.showLink = false;
-      await vm.getGifData();
       vm.type = 1;
-      setTimeout(() => {
-        vm.loading = false;
-      }, 500);
+      vm.withPromise()
+        .then(() => vm.getGifData())
+        .then(() => (vm.loading = false));
     },
     /* 翻轉圖片 */
     openLink() {
@@ -371,13 +373,12 @@ export default {
           vm.$route.query.keyword
         }&offset=${(vm.current - 1) * 25}`
       );
-      vm.queryData = result.data.data;
       window.scrollTo({
         top: top
       });
-      setTimeout(() => {
-        vm.loading = false;
-      }, 1000);
+      vm.withPromise()
+        .then(() => (vm.queryData = result.data.data))
+        .then(() => (vm.loading = false));
     },
     /* 點圖片到相關頁面 */
     clickImg(item) {
@@ -462,7 +463,7 @@ export default {
       oInput.className = "oInput";
       oInput.parentNode.removeChild(oInput);
       this.$message.info("Successed Copy");
-    },
+    }
   }
 };
 </script>
