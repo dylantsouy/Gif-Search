@@ -163,22 +163,20 @@ export default {
     window.scrollTo({
       top: 0
     });
-    /* call api */
-    await vm.getTrendGif();
-    await vm.getTrendSticker();
-    await vm.getTags();
-    await vm.getCategories();
-    /* 動畫 */
-    setTimeout(() => {
-      vm.loading = false;
-      document.querySelector("#avatar").classList.add("active");
-      document.querySelector("#trend").classList.add("active");
-      document.querySelector("#tags").classList.add("active");
-      document.querySelector("#categories").classList.add("active");
-      window.addEventListener("scroll", vm.scrollhandle);
-    }, 50);
+    /* call api + 動畫 */
+    vm.withPromise()
+      .then(() => vm.getTrendGif())
+      .then(() => vm.getTrendSticker())
+      .then(() => vm.getTags())
+      .then(() => vm.getCategories())
+      .then(() => (vm.loading = false))
+      .then(() => document.querySelector("#avatar").classList.add("active"))
+      .then(() => document.querySelector("#trend").classList.add("active"))
+      .then(() => document.querySelector("#tags").classList.add("active"))
+      .then(() => document.querySelector("#categories").classList.add("active"))
+      .then(() => window.addEventListener("scroll", vm.scrollhandle));
   },
-  /* 移除scroll監聽 */
+  /* 移除scroll動畫 */
   beforeDestroy() {
     const vm = this;
     window.removeEventListener("scroll", vm.scrollhandle);
@@ -246,6 +244,12 @@ export default {
       vm.$router.push({
         path: "relate",
         query: { relateId: item.id, item: item, type: 2 }
+      });
+    },
+    /* Promise call */
+    withPromise() {
+      return new Promise(resolve => {
+        resolve();
       });
     },
     /* eventlistiner */
@@ -448,9 +452,7 @@ $linear: linear-gradient(
     &:hover {
       font-weight: 900;
       letter-spacing: 1px;
-      background: $linear
-
-      rect {
+      background: $linear rect {
         stroke-width: 5;
         stroke-dasharray: 0, 310;
         stroke-dashoffset: 48;
