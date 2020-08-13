@@ -176,7 +176,7 @@ export default {
       document.querySelector("#tags").classList.add("active");
       document.querySelector("#categories").classList.add("active");
       window.addEventListener("scroll", vm.scrollhandle);
-    }, 1000);
+    }, 50);
   },
   /* 移除scroll動畫 */
   beforeDestroy() {
