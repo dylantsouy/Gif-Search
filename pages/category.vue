@@ -79,7 +79,7 @@ export default {
       keyword: "",
       /* api data */
       queryData: [],
-      categoriesData: [],
+      categoriesData: []
     };
   },
   async mounted() {
@@ -94,13 +94,11 @@ export default {
       top: 0
     });
     /* call api */
-    await vm.getData();
-    await vm.getCategories();
-    setTimeout(() => {
-      vm.loading = false;
-    }, 500);
-    /* 動畫 */
-    document.querySelector("#main-area").classList.add("active");
+    vm.withPromise()
+      .then(() => vm.getData())
+      .then(() => vm.getCategories())
+      .then(() => (vm.loading = false))
+      .then(() => document.querySelector("#main-area").classList.add("active"));
   },
   methods: {
     /* 拿分類資料api */
@@ -116,6 +114,12 @@ export default {
       const vm = this;
       vm.$router.push({ path: "search", query: { keyword: item.name } });
     },
+    /* Promise call */
+    withPromise() {
+      return new Promise(resolve => {
+        resolve();
+      });
+    },
     /* 點分類 */
     async clickCate(name) {
       const vm = this;
@@ -123,10 +127,9 @@ export default {
       vm.loading = true;
       vm.name = name;
       vm.$router.replace({ query: { keyword: name } });
-      await vm.getData();
-      setTimeout(() => {
-        vm.loading = false;
-      }, 1000);
+      vm.withPromise()
+        .then(() => vm.getData())
+        .then(() => (vm.loading = false));
     },
     /* 拿全部分類api */
     async getCategories() {
