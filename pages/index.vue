@@ -178,7 +178,7 @@ export default {
       window.addEventListener("scroll", vm.scrollhandle);
     }, 50);
   },
-  /* 移除scroll動畫 */
+  /* 移除scroll監聽 */
   beforeDestroy() {
     const vm = this;
     window.removeEventListener("scroll", vm.scrollhandle);
