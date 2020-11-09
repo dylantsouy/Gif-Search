@@ -82,54 +82,53 @@ export default {
       categoriesData: []
     };
   },
-  async mounted() {
+  mounted() {
     const vm = this;
     /* 拿router 分類 */
+    vm.loading = true;
     if (vm.$route.query.keyword) {
       vm.name = vm.$route.query.keyword;
     }
-
-    vm.loading = true;
     window.scrollTo({
       top: 0
     });
     /* call api */
-    vm.withPromise()
-      .then(() => vm.getData())
-      .then(() => vm.getCategories())
-      .then(() => (vm.loading = false))
-      .then(() => document.querySelector("#main-area").classList.add("active"));
+    vm.callApi().then(() => {
+      vm.loading = false;
+      document.querySelector("#main-area").classList.add("active");
+    });
   },
   methods: {
+    async callApi() {
+      const vm = this;
+      await vm.getData();
+      await vm.getCategories();
+      return new Promise(resolve => {
+        resolve();
+      });
+    },
     /* 拿分類資料api */
     async getData() {
       const vm = this;
+      vm.loading = true;
       const result = await axios.get(
         `https://api.giphy.com/v1/gifs/categories/${vm.name}?api_key=Mrjdc0YDiu0GDGzkciE04Av5N2SJ1zSN`
       );
       vm.queryData = result.data.data;
+      vm.loading = false;
     },
     /* 點圖片搜尋 */
     clickImg(item) {
       const vm = this;
       vm.$router.push({ path: "search", query: { keyword: item.name } });
     },
-    /* Promise call */
-    withPromise() {
-      return new Promise(resolve => {
-        resolve();
-      });
-    },
     /* 點分類 */
     async clickCate(name) {
       const vm = this;
       vm.queryData = [];
-      vm.loading = true;
       vm.name = name;
       vm.$router.replace({ query: { keyword: name } });
-      vm.withPromise()
-        .then(() => vm.getData())
-        .then(() => (vm.loading = false));
+      vm.getData();
     },
     /* 拿全部分類api */
     async getCategories() {

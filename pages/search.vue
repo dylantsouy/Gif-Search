@@ -225,6 +225,7 @@ export default {
   },
   async mounted() {
     const vm = this;
+    vm.loading = true;
     /* 拿router */
     if (vm.$route.query.type) {
       vm.type = vm.$route.query.type;
@@ -233,12 +234,11 @@ export default {
       top: 0
     });
     /* call api */
-    vm.withPromise()
-      .then(() => vm.queryHandler())
-      .then(() => vm.getTags())
-      .then(() => (vm.loading = false))
-      .then(() => document.querySelector("#avatar").classList.add("active"))
-      .then(() => document.querySelector("#main-area").classList.add("active"));
+    vm.queryHandler().then(() => {
+      vm.loading = false;
+      document.querySelector("#avatar").classList.add("active");
+      document.querySelector("#main-area").classList.add("active");
+    });
   },
   methods: {
     /* 控制call api type */
@@ -249,10 +249,15 @@ export default {
       } else {
         await vm.getGifData();
       }
+      await vm.getTags();
+      return new Promise(resolve => {
+        resolve();
+      });
     },
     /* call gif api */
     async getGifData() {
       const vm = this;
+      vm.loading = true;
       const result = await axios.get(
         `https://api.giphy.com/v1/gifs/search?api_key=Mrjdc0YDiu0GDGzkciE04Av5N2SJ1zSN&q=${vm.$route.query.keyword}`
       );
@@ -264,10 +269,12 @@ export default {
       if (vm.pagination.total_count && vm.pagination.total_count > 500) {
         vm.pagination.total_count = 500;
       }
+      vm.loading = false;
     },
     /* call sticker api */
     async getStickerData() {
       const vm = this;
+      vm.loading = true;
       const result = await axios.get(
         `https://api.giphy.com/v1/stickers/search?api_key=Mrjdc0YDiu0GDGzkciE04Av5N2SJ1zSN&q=${vm.$route.query.keyword}`
       );
@@ -279,12 +286,7 @@ export default {
       if (vm.pagination.total_count && vm.pagination.total_count > 500) {
         vm.pagination.total_count = 500;
       }
-    },
-    /* Promise call */
-    withPromise() {
-      return new Promise(resolve => {
-        resolve();
-      });
+      vm.loading = false;
     },
     /* 拿熱門標籤api */
     async getTags() {
@@ -295,9 +297,8 @@ export default {
       vm.tagData = result.data.data;
     },
     /* 點更換type 2*/
-    async changeSticker() {
+    changeSticker() {
       const vm = this;
-      vm.loading = true;
       vm.queryData = [];
       vm.current = 1;
       vm.first = [];
@@ -306,14 +307,11 @@ export default {
       });
       vm.showLink = false;
       vm.type = 2;
-      vm.withPromise()
-        .then(() => vm.getStickerData())
-        .then(() => (vm.loading = false));
+      vm.getStickerData();
     },
     /* 點更換type 1*/
-    async changeGif() {
+    changeGif() {
       const vm = this;
-      vm.loading = true;
       vm.current = 1;
       vm.queryData = [];
       vm.first = [];
@@ -322,9 +320,7 @@ export default {
       });
       vm.showLink = false;
       vm.type = 1;
-      vm.withPromise()
-        .then(() => vm.getGifData())
-        .then(() => (vm.loading = false));
+      vm.getGifData();
     },
     /* 翻轉圖片 */
     openLink() {
@@ -332,10 +328,10 @@ export default {
       vm.showLink = true;
     },
     /* 點熱門標籤 */
-    async searchTags(item) {
+    searchTags(item) {
       const vm = this;
       vm.keyword = "";
-      await vm.searchTagGifs(item);
+      vm.searchTagGifs(item);
     },
     async searchTagGifs(item) {
       const vm = this;
@@ -357,9 +353,7 @@ export default {
       if (vm.pagination.total_count && vm.pagination.total_count > 500) {
         vm.pagination.total_count = 500;
       }
-      setTimeout(() => {
-        vm.loading = false;
-      }, 500);
+      vm.loading = false;
       document.querySelector("#avatar").classList.add("active");
       document.querySelector("#main-area").classList.add("active");
     },
@@ -376,9 +370,8 @@ export default {
       window.scrollTo({
         top: top
       });
-      vm.withPromise()
-        .then(() => (vm.queryData = result.data.data))
-        .then(() => (vm.loading = false));
+      vm.queryData = result.data.data;
+      vm.loading = false;
     },
     /* 點圖片到相關頁面 */
     clickImg(item) {
@@ -421,9 +414,7 @@ export default {
       window.scrollTo({
         top: top
       });
-      setTimeout(() => {
-        vm.loading = false;
-      }, 500);
+      vm.loading = false;
     },
     /* 搜尋 Sticker */
     async onSearchSticker() {
@@ -449,9 +440,7 @@ export default {
       window.scrollTo({
         top: top
       });
-      setTimeout(() => {
-        vm.loading = false;
-      }, 500);
+      vm.loading = false;
     },
     /* 複製function */
     copyByText(text) {

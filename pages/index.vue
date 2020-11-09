@@ -158,23 +158,21 @@ export default {
       }
     };
   },
-  async mounted() {
+  mounted() {
     const vm = this;
+    vm.loading = true;
     window.scrollTo({
       top: 0
     });
     /* call api + 動畫 */
-    vm.withPromise()
-      .then(() => vm.getTrendGif())
-      .then(() => vm.getTrendSticker())
-      .then(() => vm.getTags())
-      .then(() => vm.getCategories())
-      .then(() => (vm.loading = false))
-      .then(() => document.querySelector("#avatar").classList.add("active"))
-      .then(() => document.querySelector("#trend").classList.add("active"))
-      .then(() => document.querySelector("#tags").classList.add("active"))
-      .then(() => document.querySelector("#categories").classList.add("active"))
-      .then(() => window.addEventListener("scroll", vm.scrollhandle));
+    vm.callApi().then(() => {
+      vm.loading = false;
+      document.querySelector("#avatar").classList.add("active");
+      document.querySelector("#trend").classList.add("active");
+      document.querySelector("#tags").classList.add("active");
+      document.querySelector("#categories").classList.add("active");
+      window.addEventListener("scroll", vm.scrollhandle);
+    });
   },
   /* 移除scroll動畫 */
   beforeDestroy() {
@@ -182,6 +180,16 @@ export default {
     window.removeEventListener("scroll", vm.scrollhandle);
   },
   methods: {
+    async callApi() {
+      const vm = this;
+      await vm.getTrendGif();
+      await vm.getTrendSticker();
+      await vm.getTags();
+      await vm.getCategories();
+      return new Promise(resolve => {
+        resolve();
+      });
+    },
     /* 搜尋框輸入 */
     async onSearch() {
       const vm = this;
