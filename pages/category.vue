@@ -27,7 +27,7 @@
             class="value"
             v-for="(item, index) in categoriesData"
             :key="index"
-            @click="clickCate(item.name)"
+            @click="clickCate(item.name_encoded)"
           >
             {{ item.name }}
           </div>
@@ -51,6 +51,7 @@
                 </div>
               </div>
             </div>
+            <div class="nodata" v-if="queryData && !queryData.length">Sorry No Data about this category now :(</div>
           </div>
         </div>
       </div>
@@ -103,7 +104,7 @@ export default {
       const vm = this;
       await vm.getData();
       await vm.getCategories();
-      return new Promise(resolve => {
+      return await new Promise(resolve => {
         resolve();
       });
     },
@@ -156,6 +157,10 @@ $linear: linear-gradient(
   rgba(26, 188, 156, 1) 0%,
   rgba(142, 68, 173, 1) 100%
 );
+.nodata{
+  color: rgb(255, 68, 0);
+  font-size: 20px;
+}
 .container-top {
   margin: 0 auto;
   height: 100%;

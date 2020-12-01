@@ -9,6 +9,9 @@
 
     <div class="label">
       <div class="icon">
+        <div class="logo-area">
+          <img src="../assets/GIPHYLogo.a62bc1d.png" alt="GIPHYLogo" />
+        </div>
         <a
           href="https://github.com/dylantsouy?tab=repositories"
           target="_blank"
@@ -18,7 +21,10 @@
         <a href="https://www.facebook.com/fu.y.zou" target="_blank">
           <a-icon type="facebook" />
         </a>
-        <a href="https://developers.giphy.com/branch/master/docs/sdk/" target="_blank">
+        <a
+          href="https://developers.giphy.com/branch/master/docs/sdk/"
+          target="_blank"
+        >
           <a-icon type="api" />
         </a>
       </div>
@@ -37,8 +43,8 @@ export default {
     goPrevPage() {
       const vm = this;
       vm.$router.back();
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>
@@ -74,10 +80,14 @@ export default {
       right: 0px;
       position: absolute;
       .logo-area {
-        width: 100px;
-        height: 50px;
+        width: 110px;
+        height: 35px;
         margin-right: 5px;
-        transform: translateY(-12px);
+        transform: translateY(-9px);
+        img {
+          width: 100%;
+          height: 100%;
+        }
       }
       i {
         cursor: pointer;
@@ -115,6 +125,11 @@ export default {
       margin-bottom: 15px;
       .icon {
         top: -25px;
+        .logo-area {
+          width: 80px;
+          height: 30px;
+          transform: translateY(-9px);
+        }
         i {
           width: 20px;
           height: 20px;

@@ -250,7 +250,7 @@ export default {
         await vm.getGifData();
       }
       await vm.getTags();
-      return new Promise(resolve => {
+      return await new Promise(resolve => {
         resolve();
       });
     },

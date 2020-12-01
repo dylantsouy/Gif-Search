@@ -32,7 +32,10 @@
           <!-- 類型swiper -->
           <div class="row-title">Categories</div>
           <div class="trend-tags" id="categories">
-            <div v-swiper:mySwiper4="swiperOption" class="swiper-container">
+            <div
+              v-swiper:mySwiper4="swiperOption"
+              class="swiper-tags swiper-container"
+            >
               <div class="swiper-wrapper">
                 <swiper-slide
                   v-for="(item, index) in categoriesData"
@@ -40,17 +43,22 @@
                   class="tags-slide"
                 >
                   <div>{{ item.name }}</div>
-                  <svg @click="searchCate(item.name)">
+                  <svg @click="searchCate(item.name_encoded)">
                     <rect x="0" y="0" fill="none" width="100%" height="100%" />
                   </svg>
                 </swiper-slide>
               </div>
+              <div class="swiper-button-next"></div>
+              <div class="swiper-button-prev"></div>
             </div>
           </div>
           <!-- 趨勢tag swiper -->
           <div class="row-title">Trending Tags</div>
           <div class="trend-tags" id="tags">
-            <div v-swiper:mySwiper3="swiperOption" class="swiper-container">
+            <div
+              v-swiper:mySwiper3="swiperOption"
+              class="swiper-tags swiper-container"
+            >
               <div class="swiper-wrapper">
                 <swiper-slide
                   v-for="(item, index) in tagData"
@@ -63,12 +71,17 @@
                   </svg>
                 </swiper-slide>
               </div>
+              <div class="swiper-button-next"></div>
+              <div class="swiper-button-prev"></div>
             </div>
           </div>
           <!-- 趨勢gifs swiper -->
           <div class="row-title">Trending GIFs</div>
           <div class="row-trend" id="trend">
-            <div v-swiper:mySwiper1="swiperOption" class="swiper-container">
+            <div
+              v-swiper:mySwiper1="swiperOption"
+              class="swiper-image swiper-container"
+            >
               <div class="swiper-wrapper">
                 <swiper-slide v-for="(item, index) in trendData" :key="index">
                   <img v-lazy="item.images.original.url" />
@@ -79,6 +92,8 @@
                   </div>
                 </swiper-slide>
               </div>
+              <div class="swiper-button-next"></div>
+              <div class="swiper-button-prev"></div>
             </div>
           </div>
           <!-- 趨勢stickers swiper -->
@@ -86,7 +101,7 @@
           <div class="row-sticker" id="sticker">
             <div
               v-swiper:mySwiper2="swiperOption"
-              class="swiper-container sticker-container"
+              class="swiper-image swiper-container sticker-container"
             >
               <div class="swiper-wrapper">
                 <swiper-slide v-for="(item, index) in stickerData" :key="index">
@@ -98,6 +113,8 @@
                   </div>
                 </swiper-slide>
               </div>
+              <div class="swiper-button-next"></div>
+              <div class="swiper-button-prev"></div>
             </div>
           </div>
         </div>
@@ -107,22 +124,22 @@
 </template>
 
 <script>
-import axios from "axios";
-import Header from "@/components/Header";
-import { Swiper, SwiperSlide } from "vue-awesome-swiper";
-import "swiper/swiper-bundle.css";
+import axios from 'axios';
+import Header from '@/components/Header';
+import { Swiper, SwiperSlide } from 'vue-awesome-swiper';
+import 'swiper/swiper-bundle.css';
 
 export default {
   components: {
     Header,
     Swiper,
-    SwiperSlide
+    SwiperSlide,
   },
   data() {
     return {
       loading: true,
       /* 搜尋框關鍵字 */
-      keyword: "",
+      keyword: '',
       /* 資料存放 */
       queryData: [],
       trendData: [],
@@ -135,49 +152,53 @@ export default {
         grabCursor: true,
         slidesPerView: 2,
         spaceBetween: 10,
+        navigation: {
+          nextEl: '.swiper-button-next',
+          prevEl: '.swiper-button-prev',
+        },
         breakpoints: {
           450: {
-            slidesPerView: 2
+            slidesPerView: 2,
           },
           600: {
-            slidesPerView: 3
+            slidesPerView: 3,
           },
           700: {
-            slidesPerView: 4
+            slidesPerView: 4,
           },
           800: {
-            slidesPerView: 5
+            slidesPerView: 5,
           },
           1380: {
-            slidesPerView: 6
+            slidesPerView: 6,
           },
           1600: {
-            slidesPerView: 8
-          }
-        }
-      }
+            slidesPerView: 8,
+          },
+        },
+      },
     };
   },
   mounted() {
     const vm = this;
     vm.loading = true;
     window.scrollTo({
-      top: 0
+      top: 0,
     });
     /* call api + 動畫 */
     vm.callApi().then(() => {
       vm.loading = false;
-      document.querySelector("#avatar").classList.add("active");
-      document.querySelector("#trend").classList.add("active");
-      document.querySelector("#tags").classList.add("active");
-      document.querySelector("#categories").classList.add("active");
-      window.addEventListener("scroll", vm.scrollhandle);
+      document.querySelector('#avatar').classList.add('active');
+      document.querySelector('#trend').classList.add('active');
+      document.querySelector('#tags').classList.add('active');
+      document.querySelector('#categories').classList.add('active');
+      window.addEventListener('scroll', vm.scrollhandle);
     });
   },
   /* 移除scroll動畫 */
   beforeDestroy() {
     const vm = this;
-    window.removeEventListener("scroll", vm.scrollhandle);
+    window.removeEventListener('scroll', vm.scrollhandle);
   },
   methods: {
     async callApi() {
@@ -186,24 +207,24 @@ export default {
       await vm.getTrendSticker();
       await vm.getTags();
       await vm.getCategories();
-      return new Promise(resolve => {
+      return await new Promise((resolve) => {
         resolve();
       });
     },
     /* 搜尋框輸入 */
     async onSearch() {
       const vm = this;
-      vm.$router.push({ path: "search", query: { keyword: vm.keyword } });
+      vm.$router.push({ path: 'search', query: { keyword: vm.keyword } });
     },
     /* 點擊Tags */
     async searchTags(item) {
       const vm = this;
-      vm.$router.push({ path: "search", query: { keyword: item } });
+      vm.$router.push({ path: 'search', query: { keyword: item } });
     },
     /* 點擊分類 */
     async searchCate(item) {
       const vm = this;
-      vm.$router.push({ path: "category", query: { keyword: item } });
+      vm.$router.push({ path: 'category', query: { keyword: item } });
     },
     /* 拿gif趨勢 api */
     async getTrendGif() {
@@ -241,8 +262,8 @@ export default {
     goGifDetail(item) {
       const vm = this;
       vm.$router.push({
-        path: "relate",
-        query: { relateId: item.id, item: item, type: 1 }
+        path: 'relate',
+        query: { relateId: item.id, item: item, type: 1 },
       });
     },
     /* 點擊貼圖 type: 2 為 Sticker*/
@@ -250,29 +271,29 @@ export default {
       const vm = this;
       vm.data = item;
       vm.$router.push({
-        path: "relate",
-        query: { relateId: item.id, item: item, type: 2 }
+        path: 'relate',
+        query: { relateId: item.id, item: item, type: 2 },
       });
     },
     /* Promise call */
     withPromise() {
-      return new Promise(resolve => {
+      return new Promise((resolve) => {
         resolve();
       });
     },
     /* eventlistiner */
     scrollhandle(event) {
       const top1 = document.documentElement.scrollTop;
-      const top2 = document.querySelector("#sticker").offsetTop;
+      const top2 = document.querySelector('#sticker').offsetTop;
       const h = window.screen.height;
       // --- sticker是否顯示 ---
       if (top1 + h > top2) {
         setTimeout(() => {
-          document.querySelector("#sticker").classList.add("active");
+          document.querySelector('#sticker').classList.add('active');
         }, 50);
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -282,6 +303,53 @@ $linear: linear-gradient(
   rgba(26, 188, 156, 1) 0%,
   rgba(142, 68, 173, 1) 100%
 );
+.swiper-image {
+  .swiper-button-next {
+    font-size: 12px;
+    color: #fff;
+    text-shadow: 0px 0px 5px #333;
+    margin-right: 5px;
+
+    &:after {
+      font-weight: 600;
+      font-size: 25px;
+    }
+  }
+  .swiper-button-prev {
+    font-size: 12px;
+    color: #fff;
+    text-shadow: 0px 0px 5px #333;
+    margin-left: 5px;
+
+    &:after {
+      font-weight: 600;
+      font-size: 25px;
+    }
+  }
+}
+.swiper-tags {
+  .swiper-button-next {
+    font-size: 12px;
+    color: #fff;
+    text-shadow: 0px 0px 5px #333;
+    transform: translateY(-12%) translateX(30%);
+
+    &:after {
+      font-weight: 600;
+      font-size: 14px;
+    }
+  }
+  .swiper-button-prev {
+    color: #fff;
+    text-shadow: 0px 0px 5px #333;
+    transform: translateY(-12%) translateX(-30%);
+
+    &:after {
+      font-weight: 600;
+      font-size: 14px;
+    }
+  }
+}
 .container-top {
   margin: 0 auto;
   height: 100%;
@@ -289,7 +357,7 @@ $linear: linear-gradient(
   background: $linear;
   padding: 9rem 0 50px;
   min-height: calc(100vh - 8rem);
-  font-family: "Fredoka One", cursive;
+  font-family: 'Fredoka One', cursive;
   .container {
     width: 100%;
     height: 100%;
@@ -458,14 +526,15 @@ $linear: linear-gradient(
       transition: all 0.35s linear;
     }
     &:hover {
-      font-weight: 900;
-      letter-spacing: 1px;
-      background: $linear rect {
+      rect {
         stroke-width: 5;
         stroke-dasharray: 0, 310;
         stroke-dashoffset: 48;
         transition: all 1.35s cubic-bezier(0.19, 1, 0.22, 1);
       }
+      font-weight: 900;
+      letter-spacing: 1px;
+      background: $linear;
     }
   }
 
@@ -485,7 +554,7 @@ $linear: linear-gradient(
       transform: rotateX(20deg);
     }
     &::after {
-      content: "";
+      content: '';
       position: absolute;
       left: 0;
       bottom: 0;
@@ -533,6 +602,7 @@ $linear: linear-gradient(
     }
     &:hover {
       opacity: 1;
+      border: 5px solid #fff;
       &::before {
         transform: scale(1.05, 1);
       }
