@@ -127,7 +127,7 @@
 import axios from 'axios';
 import Header from '@/components/Header';
 import { Swiper, SwiperSlide } from 'vue-awesome-swiper';
-import 'swiper/swiper-bundle.css';
+import 'swiper/css/swiper.css'
 
 export default {
   components: {
