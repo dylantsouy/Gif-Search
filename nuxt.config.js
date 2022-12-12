@@ -73,6 +73,6 @@ export default {
     vendor:['mint-ui','axios','vue-lazyload'],
   },
   router: {
-    base:'/gif-search/'
+    base:'/Gif-Search/'
   }
 }

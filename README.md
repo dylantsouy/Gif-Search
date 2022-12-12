@@ -4,7 +4,7 @@
 </p>
 
 <h3 align="center">Gif-Search</h3>
-<p align="center">https://dygifsearch.herokuapp.com/
+<p align="center">https://dylantsouy.github.io/Gif-Search/
 </p>
 
 
@@ -56,8 +56,8 @@ You can search gif / stickers name or select Categories to filter out gif images
 
 ## 🚀 Deployment <a name = "deployment"></a>
 
-Deploy to Heroku
-https://dygifsearch.herokuapp.com/
+Deploy to Githubpage
+https://dylantsouy.github.io/Gif-Search/
 
 ## ⛏️ Built Using <a name = "built_using"></a>
 
