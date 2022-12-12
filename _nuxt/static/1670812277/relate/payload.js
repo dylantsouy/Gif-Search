@@ -1,0 +1,1 @@
+__NUXT_JSONP__("/relate", {data:[{}],fetch:{},mutations:void 0});
